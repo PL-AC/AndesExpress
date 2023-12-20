@@ -1,0 +1,156 @@
+<div class="container">
+    <div class="col">
+        <h3>{{titulo}}</h3>
+    </div>
+    <hr>
+    <form action="" class="form-horizontal">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>Selecciona un Estacionamiento:</label>
+                <select id="cliente" name="cliente" class="form-control" [(ngModel)] = "parkingLotInput">
+                    <option value="1">Estacionamiento Piso 1</option>
+                    <option value="2">Estacionamiento Piso 2</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label>N° Placa:</label>
+                <input type="text" name="placa" id="placa" 
+                    placeholder="Ingresar Placa del auto a parquear"
+                    class="form-control" [(ngModel)] = "placaInput" (input)="consultarPlaca()">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Nombre Dueño:</label>
+                <input type="text" name="nombreCliente" id="nombreCliente" 
+                    placeholder="Nombre" readonly
+                    class="form-control" [(ngModel)] = "nombreCliente">
+            </div>
+            <!--div class="form-group col-md-4">
+                <label>Celular:</label>
+                <input type="text" name="celularCliente" id="celularCliente" 
+                    placeholder="Celular" readonly
+                    class="form-control" [(ngModel)] = "celularCliente">
+            </div-->
+
+            <div class="form-group col-md-4">
+                <label for="marca">Marca:</label>
+                <input type="text" name="marca" id="marca" 
+                    placeholder="Marca" readonly
+                    class="form-control" [(ngModel)] = "marcaInput">
+            </div>
+
+            <div class="form-group col-md-4">
+                <label for="modelo">Modelo:</label>
+                <input type="text" name="modelo" id="modelo" 
+                    placeholder="Modelo" readonly
+                    class="form-control" [(ngModel)] = "modeloInput">
+            </div>
+
+        </div>
+        <br>
+        <div class="row">
+            <div class="form-group col-md-3">
+                <button type="submit" class="btn btn-success"
+                    (click) = "agregarParking()">
+                    <span class="fa fa-plus"></span>
+                    Agregar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<br>
+
+<div class="container">
+    <hr>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4 class="m-0 font-weight-bold text-primary">Lista de Parking</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="dataTable" class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Estacionamiento</th>
+                            <th>Plazas</th>
+                            <th>Ocupados</th>
+                            <th>Libres</th>                           
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Estacionamiento</th>
+                            <th>Plazas</th>
+                            <th>Ocupados</th>
+                            <th>Libres</th>                            
+                            <th>Acciones</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr *ngFor="let parking of parkingLst; let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{parking.description}}</td>
+                            <td>{{parking.places}}</td>
+                            <td>{{parking.occupiedPlaces}}</td>
+                            <td>{{parking.remainingPlaces}}</td>
+                            <td>
+                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#myModalDetalle" 
+                                    (click)="verAutos(parking.id)">
+                                    <span class="fa fa-eye"></span>
+                                </a>&nbsp;
+                                <!--a href="#" class="btn btn-danger">
+                                    <span class="fa fa-trash"></span>
+                                </a-->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModalDetalle" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Plazas de Estacionamiento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Autos En Estacionamiento</h3>
+                    </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4" *ngFor="let pbl of parkingByLot; let i = index">                            
+                                    <div class="card" style="width: 18rem;">
+                                        <img class="card-img-top" src="https://digital.pixelmotion.com/assets/theme/seo-page-builder/images/2018/Dodge/Charger%20GT/2018%20Dodge%20Charger%20GT%20Front%20Gray%20Exterior.jpg" 
+                                            alt="Card image cap">
+                                        <div class="card-body">
+                                        <h5 class="card-title">Ingreso: {{pbl.entryDate | date:"dd/MM/yyyy HH:mm"}}</h5>
+                                        <p class="card-text">
+                                            Marca: {{pbl.brand}}<br>
+                                            Modelo: {{pbl.model}}<br>
+                                            Placa: {{pbl.plate}}</p>
+                                        <a href="#" class="btn btn-primary"
+                                        (click)="eliminarParking(pbl.idCar);">Salir del Estacionamiento</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-danger float-right" data-dismiss="modal"><i
+                                    class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
